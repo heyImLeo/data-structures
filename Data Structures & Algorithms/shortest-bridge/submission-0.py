@@ -1,40 +1,54 @@
 class Solution:
     def shortestBridge(self, grid: List[List[int]]) -> int:
-        directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
-        visited = set()
         rows, cols = len(grid), len(grid[0])
-        queue = deque([])
+        directions = [(0,1),(1,0),(-1,0),(0,-1)]
+        visited = set()
+        queue = deque()
 
         def dfs(r, c):
-            visited.add((r, c))
-            for dr, dc in directions:
-                nr, nc = r + dr, c + dc
-                if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:
-                    if grid[nr][nc] == 0:
-                        visited.add((nr, nc))
-                        queue.append((nr, nc, 1))
-                    else:
-                        dfs(nr, nc)
+            if (
+                r < 0 or r >= rows or
+                c < 0 or c >= cols or
+                grid[r][c] == 0 or
+                (r, c) in visited
+            ):
+                return
 
-        break_all = False
+            visited.add((r, c))
+            queue.append((r, c, 0))
+
+            for dr, dc in directions:
+                dfs(r + dr, c + dc)
+
+        found = False
+
         for r in range(rows):
             for c in range(cols):
                 if grid[r][c] == 1:
                     dfs(r, c)
-                    break_all = True
+                    found = True
                     break
-
-            if break_all:
+            if found:
                 break
         
         while queue:
-            r, c, dist = queue.popleft()
+            r, c, distance = queue.popleft()
 
             for dr, dc in directions:
-                newR, newC = dr + r, dc + c
-                if 0<=newR<rows and 0<=newC<cols and (newR,newC) not in visited:
-                    if grid[newR][newC] == 1:
-                        return dist
-                    visited.add((newR, newC))
-                    queue.append((newR, newC, dist+1))
-        
+                nr, nc = r + dr, c + dc
+
+                if not (0 <= nr < rows and 0 <= nc < cols):
+                    continue
+
+                if (nr, nc) in visited:
+                    continue
+
+                if grid[nr][nc] == 1:
+                    return distance
+
+                visited.add((nr, nc))
+                queue.append((nr, nc, distance + 1))
+
+        return -1
+
+                    
