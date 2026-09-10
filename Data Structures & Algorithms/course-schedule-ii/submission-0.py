@@ -1,29 +1,29 @@
-from collections import defaultdict
 class Solution:
     def findOrder(self, numCourses: int, prerequisites: List[List[int]]) -> List[int]:
-        visited, cycle = set(), set()
+        visited = set()
+        visiting = set()
         graph = defaultdict(list)
         res = []
 
         for u, v in prerequisites:
             graph[u].append(v)
         
-        def dfs(course):
-            if course in cycle:
-                return False
-            if course in visited:
+        def dfs(node):
+            if node in visited:
                 return True
-
-            cycle.add(course)
-
-            for neighbour in graph[course]:
-                if not dfs(neighbour):
+            
+            if node in visiting:
+                return False
+            
+            visiting.add(node)
+            for nei in graph[node]:
+                if not dfs(nei):
                     return False
-
-            cycle.remove(course)
-            visited.add(course)
-            res.append(course)
-            return True 
+            
+            visiting.remove(node)
+            visited.add(node)
+            res.append(node)
+            return True
         
         for i in range(numCourses):
             if not dfs(i):
