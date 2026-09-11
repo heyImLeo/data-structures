@@ -2,32 +2,26 @@ from heapq import heappop, heappush
 class Solution:
     def swimInWater(self, grid: List[List[int]]) -> int:
         directions = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-        ROWS = len(grid)
-        COLS = len(grid[0])
-
-        def rowColCheck(r,c):
-            row_in = 0 <= r < ROWS
-            col_in = 0 <= c < COLS
-            return row_in and col_in
+        rows, cols = len(grid), len(grid[0])
         
-        shortest = {} # [(r,c): cost]
+        minTimes = {} # [(r,c): cost]
         minHeap = [(grid[0][0], 0, 0)] # [(cost, r, c)]
 
         while minHeap:
-            cost, row, col = heappop(minHeap)
+            cost, r, c = heappop(minHeap)
 
-            if not rowColCheck(row, col) or (row, col) in shortest:
+            if not 0<=r<rows or not 0<=c<cols or (r, c) in minTimes:
                 continue
             
-            shortest[(row, col)] = cost
+            minTimes[(r, c)] = cost
 
-            if row == ROWS-1 and col == COLS-1:
-                return max(shortest.values())
+            if r == rows-1 and c == cols-1:
+                return max(minTimes.values())
 
-            for u,v in directions:
-                new_row, new_col = row+u, col+v
-                if rowColCheck(new_row, new_col) and (new_row, new_col) not in shortest:
-                    heappush(minHeap, (grid[new_row][new_col], new_row, new_col))
+            for dr,dc in directions:
+                nr, nc = r+dr, c+dc
+                if 0<=nr<rows and 0<=nc<cols and (nr, nc) not in minTimes:
+                    heappush(minHeap, (grid[nr][nc], nr, nc))
         
         return -1
             
