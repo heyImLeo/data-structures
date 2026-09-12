@@ -1,34 +1,33 @@
 class Solution:
     def ladderLength(self, beginWord: str, endWord: str, wordList: List[str]) -> int:
-        queue = deque([beginWord])
-        ans = 1
-        words = set(wordList)
-
-        if endWord not in words:
+        if endWord not in wordList:
             return 0
         
-        def is_letter_apart(wordA, wordB):
-            diff = 0
-            for a, b in zip(wordA, wordB):
-                if a!=b:
-                    diff+=1
-                    if diff > 1:
-                        return False
+        queue = deque([beginWord])
+        words = set(wordList)
+        res = 1
+
+        def checkWord(word, new_word):
+            check = 0
+            for i in range(len(word)):
+                if word[i] != new_word[i]:
+                    check+=1
+                if check>1:
+                    return False
             
-            return diff == 1
-        
+            return check == 1
+
         while queue:
-            length = len(queue)
-            for _ in range(length):
-                word = queue.popleft()
+            for i in range(len(queue)):
+                curWord = queue.popleft()
 
                 for char in list(words):
-                    if is_letter_apart(word, char):
+                    if checkWord(curWord, char):
                         if char == endWord:
-                            return ans+1
+                            return res+1
                         queue.append(char)
                         words.remove(char)
-            ans+=1
+            
+            res+=1
         
         return 0
-            
