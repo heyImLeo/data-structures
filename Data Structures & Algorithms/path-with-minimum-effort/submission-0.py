@@ -1,26 +1,24 @@
 class Solution:
     def minimumEffortPath(self, heights: List[List[int]]) -> int:
-        directions = [(0,1),(1,0),(-1,0),(0,-1)]
-        visit = set()
-        heap = [(0,0,0)] # (diff, r, c)
-        ROWS, COLS = len(heights), len(heights[0])
+        rows, cols = len(heights), len(heights[0])
+        directions = [(0,1),(1,0),(0,-1),(-1,0)]
+        minHeap = [(0, 0, 0)] # [(effort, row, col)]
+        minTimes = {}
 
-        while heap:
-            diff, r, c = heapq.heappop(heap)
+        while minHeap:
+            effort, row, col = heapq.heappop(minHeap)
 
-            if (r,c) in visit:
+            if (row, col) == (rows-1, cols-1):
+                return effort
+
+            if (row, col) in minTimes:
                 continue
-            
-            visit.add((r,c))
-            
-            if r == ROWS-1 and c == COLS-1:
-                return diff
-            
+            minTimes[(row, col)] = effort
+
             for dr, dc in directions:
-                newR, newC = r + dr, c + dc
-                if 0<=newR<ROWS and 0<=newC<COLS and (newR, newC) not in visit:
-                    newDiff = max(diff, abs(heights[r][c] - heights[newR][newC]))
-                    heapq.heappush(heap, (newDiff, newR, newC))
-            
-        return 0
-            
+                nr, nc = dr+row, dc+col
+                if 0<=nr<rows and 0<=nc<cols and (nr, nc) not in minTimes:
+                    effortAbs = abs(heights[nr][nc] - heights[row][col])
+                    heapq.heappush(minHeap, (max(effortAbs, effort), nr, nc))
+        
+        return None
