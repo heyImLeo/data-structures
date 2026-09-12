@@ -3,15 +3,16 @@ class Solution:
         left, right = 0, x
         res = 0
 
-        while left <= right:
+        while left<=right:
             mid = (left+right)//2
-            exp = mid**2
-            if exp == x:
+            sq = mid*mid
+            if  sq == x:
                 return mid
-            
-            elif exp > x:
-                right = mid - 1
+            if sq > x:
+                right = mid-1
             else:
-                res = left
-                left = mid + 1
+                left = mid+1
+                res = mid
+        
         return res
+            
