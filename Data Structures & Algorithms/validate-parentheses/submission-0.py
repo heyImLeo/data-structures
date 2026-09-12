@@ -1,16 +1,15 @@
 class Solution:
     def isValid(self, s: str) -> bool:
         stack = []
-        mapping = {
-            ')': '(',
-            '}': '{',
-            ']': '['
-        }
+        closeToOpen = { ")" : "(", "]" : "[", "}" : "{" }
 
-        for char in s:
-            if char not in mapping:
-                stack.append(char)
-            elif not stack or mapping[char] != stack.pop():
-                return False
-        
-        return not stack
+        for c in s:
+            if c in closeToOpen:
+                if stack and stack[-1] == closeToOpen[c]:
+                    stack.pop()
+                else:
+                    return False
+            else:
+                stack.append(c)
+
+        return True if not stack else False
