@@ -1,31 +1,34 @@
 class Solution:
     def countComponents(self, n: int, edges: List[List[int]]) -> int:
-        visit = set()
-        graph = defaultdict(list)
-        c = 0
-
-        for u,v in edges:
-            graph[u].append(v)
-            graph[v].append(u)
         
-        def dfs(node, visit):
-            if node in visit:
-                return False
+        class DSU: 
+            def __init__(self, n):
+                self.size = [1] * n
+                self.parent = list(range(n))
             
-            visit.add(node)
+            def find(self, x):
+                if self.parent[x] != x:
+                    self.parent[x] = self.find(self.parent[x])
+                return self.parent[x]
+            
+            def union_size(self, x, y):
+                root_x = self.find(x)
+                root_y = self.find(y)
 
-            for nei in graph[node]:
-                if nei not in visit:
-                    dfs(nei, visit)
-            
-            return True
+                if root_x == root_y:
+                    return
+                
+                if self.size[root_x] > self.size[root_y]:
+                    self.parent[root_y] = root_x
+                    self.size[root_x] += self.size[root_y]
+                else:
+                    self.parent[root_x] = root_y
+                    self.size[root_y] += self.size[root_x]
+                
+                return True
         
-        for i in range(n):
-            if i not in visit:
-                dfs(i, visit)
-                c+=1
+        dsu = DSU(n)
+        for edge in edges:
+            dsu.union_size(*edge)
         
-        return c
-
-
-            
+        return len(set(dsu.find(i) for i in range(n)))
