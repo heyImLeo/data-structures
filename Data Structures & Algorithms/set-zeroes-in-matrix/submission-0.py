@@ -1,19 +1,15 @@
 class Solution:
     def setZeroes(self, matrix: List[List[int]]) -> None:
-        rowsHasZero = set()
-        colsHasZero = set()
-        rows = len(matrix)
-        cols = len(matrix[0])
+        ROWS, COLS = len(matrix), len(matrix[0])
+        rows, cols = [False] * ROWS, [False] * COLS
 
-        for r in range(rows):
-            for c in range(cols):
+        for r in range(ROWS):
+            for c in range(COLS):
                 if matrix[r][c] == 0:
-                    rowsHasZero.add(r)
-                    colsHasZero.add(c)
-        
-        for r in range(rows):
-            for c in range(cols):
-                if r in rowsHasZero or c in colsHasZero:
+                    rows[r] = True
+                    cols[c] = True
+
+        for r in range(ROWS):
+            for c in range(COLS):
+                if rows[r] or cols[c]:
                     matrix[r][c] = 0
-        
-        
