@@ -1,35 +1,20 @@
 class Solution:
     def numIslands(self, grid: List[List[str]]) -> int:
-        def explore(grid, r, c, visited):
-            row_in = 0 <= r < len(grid)
-            col_in = 0 <= c < len(grid[0])
-            directions = [(0,1),(1,0),(0,-1),(-1,0)]
+        rows, cols = len(grid), len(grid[0])
+        directions = [(0,1),(1,0),(-1,0),(0,-1)]
+        islands = 0
 
-            if not row_in or not col_in:
-                return
-
-            if grid[r][c] == "0":
-                return
-            
-            if (r,c) in visited:
-                return
-            
-            visited.add((r,c))
-
-            for x,y in directions:
-                explore(grid, r+x, c+y, visited)
-            
-            return
-
-        ROWS = len(grid)
-        COLS = len(grid[0])
-        visited = set()
-        island = 0
-
-        for r in range(ROWS):
-            for c in range(COLS):
-                if grid[r][c] == '1' and (r,c) not in visited:
-                    explore(grid, r, c, visited)
-                    island+=1
+        def dfs(r,c):
+            grid[r][c] = "0"
+            for dr, dc in directions:
+                nr, nc = dr+r, dc+c
+                if 0<=nr<rows and 0<=nc<cols and grid[nr][nc] == "1":
+                    dfs(nr, nc)
         
-        return island
+        for r in range(rows):
+            for c in range(cols):
+                if grid[r][c] == '1':
+                    dfs(r,c)
+                    islands+=1
+        
+        return islands
