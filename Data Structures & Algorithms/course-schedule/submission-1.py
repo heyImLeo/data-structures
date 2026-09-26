@@ -1,39 +1,22 @@
-
 class Solution:
     def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
         graph = defaultdict(list)
+        indegree = [0] * numCourses
+        topo = []
 
-        for u,v in prerequisites:
+        for u, v in prerequisites:
             graph[u].append(v)
-
+            indegree[v]+=1
         
-        visiting = set()
-        visited = set()
+        queue = deque([i for i in range(numCourses) if indegree[i] == 0])
 
-        for i in range(numCourses):
+        while queue:
+            node = queue.popleft()
+            topo.append(node)
 
-            def dfs(node):
-                if node in visiting:
-                    return False
-                
-                if node in visited:
-                    return True
-                
-                visiting.add(node)
-
-                for nei in graph[node]:
-                    if not dfs(nei):
-                        return False
-                
-                visiting.remove(node)
-                visited.add(node)
-                return True
+            for new_node in graph[node]:
+                indegree[new_node] -= 1
+                if indegree[new_node] == 0:
+                    queue.append(new_node)
             
-            if not dfs(i):
-                return False
-        
-        return True
-
-
-
-
+        return False if len(topo) != numCourses else True
