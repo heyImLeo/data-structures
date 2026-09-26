@@ -1,32 +1,32 @@
 class Solution:
     def islandPerimeter(self, grid: List[List[int]]) -> int:
-        ROWS, COLS = len(grid), len(grid[0])
+        rows, cols = len(grid), len(grid[0])
+        directions = [(0,1),(1,0),(-1,0),(0,-1)]
         visit = set()
-        directions = [(0,1),(1,0),(0,-1),(-1,0)]
+        peri = 0
+        queue = deque([])
+        flag = False
 
-        def dfs(r,c):
-            row_in = 0 <= r < ROWS 
-            col_in = 0 <= c < COLS
-
-            if not row_in or not col_in or grid[r][c] == 0:
-                return 1
-            
-            if (r,c) in visit:
-                return 0
-
-            visit.add((r,c))
-
-            perim = 0
-            for u,v in directions: 
-                newR, newC = r+u, c+v
-                perim += dfs(newR, newC)
-            
-            return perim
-        
-        for r in range(ROWS):
-            for c in range(COLS):
+        for r in range(rows):
+            for c in range(cols):
                 if grid[r][c]:
-                    return dfs(r,c)
+                    queue.append((r,c))
+                    visit.add((r,c))
+                    flag = True
+                    break
+            
+            if flag:
+                break
         
-        return 0
+        while queue:
+            r, c = queue.popleft()
 
+            for dr, dc in directions:
+                nr, nc = dr+r, dc+c
+                if 0<=nr<rows and 0<=nc<cols and grid[nr][nc] == 1 and (nr, nc) not in visit:
+                    queue.append((nr, nc))
+                    visit.add((nr, nc))
+                elif not 0<=nr<rows or not 0<=nc<cols or not grid[nr][nc]:
+                    peri+=1
+        
+        return peri
