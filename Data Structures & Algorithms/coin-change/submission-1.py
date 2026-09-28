@@ -1,28 +1,22 @@
 class Solution:
     def coinChange(self, coins: List[int], amount: int) -> int:
-        def _coin(amount, coins, memo):
-
-            if amount in memo:
-                return memo[amount]
-
+        memo = {}
+        def _coin(amount):
+            if amount < 0:
+                return float('inf')
+            
             if amount == 0:
                 return 0
             
-            if amount < 0:
-                return float("inf")
+            if amount in memo:
+                return memo[amount]
             
-            coin = float("inf")
-
-            for c in coins:
-                nums = 1 + _coin(amount-c, coins, memo)
-                coin = min(coin, nums)
-            memo[amount] = coin
-            
-            return coin
-        
-        ans = _coin(amount, coins, {})
-
-        if ans == float("inf"):
-            return -1
-        
-        return ans
+            min_value = float("inf")
+            for coin in coins:
+                val = 1 + _coin(amount-coin)
+                if val < min_value:
+                    min_value = val
+            memo[amount] = min_value
+            return memo[amount]
+        ans = _coin(amount)
+        return ans if ans != float("inf") else -1
