@@ -1,16 +1,21 @@
 class Solution:
     def uniquePathsWithObstacles(self, obstacleGrid: List[List[int]]) -> int:
-        def explore(grid, r, c, memo):
+        memo = {}
+        row, col = len(obstacleGrid), len(obstacleGrid[0])
+        def _path(r, c):
+            
+            if not 0<=r<row or not 0<=c<col or obstacleGrid[r][c] == 1:
+                return 0
+
+            if r == row-1 and c == col-1:
+                return 1
+                
             if (r,c) in memo:
                 return memo[(r,c)]
             
-            if r >= len(grid) or c >= len(grid[0]) or grid[r][c] == 1:
-                return 0
-            
-            if r == len(grid)-1 and c == len(grid[0])-1:
-                return 1
-            
-            memo[(r,c)] = explore(grid, r+1, c, memo) + explore(grid, r, c+1, memo)
+            down = _path(r+1, c)
+            right = _path(r, c+1)
+            memo[(r,c)] = down + right
             return memo[(r,c)]
-        
-        return explore(obstacleGrid, 0, 0, {})
+
+        return _path(0, 0)
