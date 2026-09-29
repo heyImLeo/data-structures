@@ -1,25 +1,27 @@
 class Solution:
     def maxSatisfied(self, customers: List[int], grumpy: List[int], minutes: int) -> int:
-        res = 0
+        n = len(customers)
+        totalNoGrumpy = 0
+
+        for i in range(n):
+            if not grumpy[i]:
+                totalNoGrumpy+=customers[i]
+        
+        maxTotal, curSum = totalNoGrumpy, totalNoGrumpy
+        
         left = 0
-        curSum, maxSum = 0, 0
-        grumpVal = []
-        
-        for i in range(len(customers)):
-            if grumpy[i] == 0:
-                res+=customers[i]
+        for right in range(n):
+            if grumpy[right]:
+                curSum += customers[right]
+            while right-left+1>minutes:
+                if grumpy[left]:
+                    curSum -= customers[left]
+                left+=1
             
-        satisfied = res
+            if right-left+1==minutes:
+                maxTotal = max(maxTotal, curSum)
+        return maxTotal
 
-        for i in range(len(customers)-minutes+1):
-            cur = 0
-            for j in range(i, i+minutes):
-                if grumpy[j]:
-                    cur+=customers[j]
-            
-            res = max(res, satisfied+cur)
-        
-        return res
-            
+                
 
-        
+
