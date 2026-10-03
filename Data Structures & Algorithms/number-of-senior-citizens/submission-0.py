@@ -1,8 +1,7 @@
 class Solution:
     def countSeniors(self, details: List[str]) -> int:
-        count = 0
-        for char in details:
-            age = char[-4]+char[-3]
-            if int(age)>60:
-                count+=1
-        return count
+        senior = 0
+        for det in details:
+            age = int(det[11:13])
+            senior += 1 if age > 60 else 0
+        return senior
