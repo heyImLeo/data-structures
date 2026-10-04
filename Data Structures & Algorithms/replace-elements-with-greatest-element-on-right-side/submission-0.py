@@ -1,11 +1,8 @@
 class Solution:
     def replaceElements(self, arr: List[int]) -> List[int]:
-        if len(arr) == 1:
-            return [-1]
-        
-        for i in range(len(arr)-1):
-            sliced_arr = arr[i+1:]
-            max_num = max(sliced_arr)
-            arr[i] = max_num
-        arr[-1] = -1
-        return arr
+        res = deque([-1])
+        curMax = arr[-1]
+        for i in range(len(arr)-2, -1, -1):
+            res.appendleft(curMax)
+            curMax = max(curMax, arr[i])
+        return list(res)
